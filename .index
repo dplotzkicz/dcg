@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Technology, Learning, and Creation</title>
+    <!-- Tailwind CSS for styling --><script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts for typography --><link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Custom styles for the page */
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* The canvas will be our animated background */
+        #particle-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        /* Simple fade-in animation for the content */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 1.5s ease-out forwards;
+        }
+
+        /* Styling for the highlighted words to match the logo colors */
+        .highlight {
+            transition: all 0.3s ease;
+            font-weight: 700; /* bold */
+        }
+        .highlight-green { color: #8dc63f; }
+        .highlight-cyan { color: #00a9ce; }
+        .highlight-yellow { color: #ffd500; }
+        .highlight-blue { color: #005baa; }
+        .highlight-red { color: #e62d32; }
+
+        .highlight:hover {
+            text-shadow: 0 0 8px rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800 overflow-hidden">
+
+    <!-- The animated background canvas --><canvas id="particle-canvas"></canvas>
+
+    <!-- Main container for the quote, centered on the page --><div class="relative min-h-screen flex items-center justify-center p-6">
+        <div class="z-10 max-w-4xl text-center fade-in">
+            <!-- Main heading of the quote --><h1 class="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 text-gray-800">
+                We Use Technology to Learn and Create
+            </h1>
+            <!-- The rest of the quote --><p class="text-lg md:text-xl lg:text-2xl text-gray-600 leading-relaxed">
+                As curious learners, we use technology not just to consume information, but to actively 
+                <span class="highlight highlight-green">create</span>, 
+                <span class="highlight highlight-cyan">build</span>, and 
+                <span class="highlight highlight-yellow">demonstrate</span> 
+                our understanding. We use technology as a tool to support our learning, never as a substitute for our own essential 
+                <span class="highlight highlight-blue">critical thinking</span>.
+            </p>
+        </div>
+        <!-- "Learn More" link section --><div class="z-10 absolute bottom-8 fade-in">
+            <p class="text-md md:text-lg text-gray-500">
+                Learn More at <a href="http://bit.ly/ISPdcg" target="_blank" class="highlight highlight-red underline font-semibold">bit.ly/ISPdcg</a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // JavaScript for the animated particle background
+        const canvas = document.getElementById('particle-canvas');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        let particlesArray;
+
+        // Colors sampled from the ISP logo star
+        const logoColors = ['#00a9ce', '#005baa', '#c40e84', '#e62d32', '#ffd500', '#8dc63f'];
+
+        class Particle {
+            constructor(x, y, directionX, directionY, size, color) {
+                this.x = x; this.y = y; this.directionX = directionX; this.directionY = directionY; this.size = size; this.color = color;
+            }
+
+            draw() {
+                ctx.beginPath();
+                // Increased particle size
+                ctx.arc(this.x, this.y, this.size * 1.5, 0, Math.PI * 2, false); 
+                ctx.fillStyle = this.color;
+                ctx.fill();
+            }
+
+            update() {
+                if (this.x > canvas.width || this.x < 0) { this.directionX = -this.directionX; }
+                if (this.y > canvas.height || this.y < 0) { this.directionY = -this.directionY; }
+                this.x += this.directionX; this.y += this.directionY;
+                this.draw();
+            }
+        }
+
+        function init() {
+            particlesArray = [];
+            // Reduced number of particles to spread them out more
+            let numberOfParticles = (canvas.height * canvas.width) / 15000; 
+            for (let i = 0; i < numberOfParticles; i++) {
+                let size = (Math.random() * 2) + 1;
+                let x = (Math.random() * ((innerWidth - size * 2) - (size * 2)) + size * 2);
+                let y = (Math.random() * ((innerHeight - size * 2) - (size * 2)) + size * 2);
+                let directionX = (Math.random() * .4) - .2;
+                let directionY = (Math.random() * .4) - .2;
+                // Assign a random color from the logo's color palette
+                let color = logoColors[Math.floor(Math.random() * logoColors.length)];
+                particlesArray.push(new Particle(x, y, directionX, directionY, size, color));
+            }
+        }
+
+        function connect() {
+            let opacityValue = 1;
+            for (let a = 0; a < particlesArray.length; a++) {
+                for (let b = a; b < particlesArray.length; b++) {
+                    let distance = ((particlesArray[a].x - particlesArray[b].x) * (particlesArray[a].x - particlesArray[b].x)) +
+                        ((particlesArray[a].y - particlesArray[b].y) * (particlesArray[a].y - particlesArray[b].y));
+                    
+                    // Increased connection distance for more spread out lines
+                    if (distance < (canvas.width / 5) * (canvas.height / 5)) { 
+                        opacityValue = 1 - (distance / 30000); // Adjusted for new distance
+                        // Use a neutral grey for connecting lines to work on the light background
+                        ctx.strokeStyle = `rgba(107, 114, 128, ${opacityValue * 0.5})`;
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
+                        ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            ctx.clearRect(0, 0, innerWidth, innerHeight);
+            for (let i = 0; i < particlesArray.length; i++) {
+                particlesArray[i].update();
+            }
+            connect();
+        }
+
+        window.addEventListener('resize', () => {
+            canvas.width = innerWidth;
+            canvas.height = innerHeight;
+            init();
+        });
+
+        init();
+        animate();
+    </script>
+</body>
+</html>
+
