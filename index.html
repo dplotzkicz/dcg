@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Technology, Learning, and Creation</title>
-    <!-- Tailwind CSS for styling --><script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts for typography --><link rel="preconnect" href="https://fonts.googleapis.com">
+    <title>ISP Digital Community Guidelines</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts for typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
     <style>
@@ -24,152 +26,272 @@
             z-index: 0;
         }
 
-        /* Simple fade-in animation for the content */
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        /* Animation for content transitions */
+        .fade-container {
+            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+        }
+        .content-hidden {
+            opacity: 0;
+            transform: translateY(15px);
+            pointer-events: none;
         }
 
-        .fade-in {
-            animation: fadeIn 1.5s ease-out forwards;
-        }
-
-        /* Styling for the highlighted words to match the logo colors */
+        /* Base styling for highlighted keywords */
         .highlight {
-            transition: all 0.3s ease;
-            font-weight: 700; /* bold */
+            font-weight: 700;
         }
-        .highlight-green { color: #8dc63f; }
-        .highlight-cyan { color: #00a9ce; }
-        .highlight-yellow { color: #ffd500; }
-        .highlight-blue { color: #005baa; }
-        .highlight-red { color: #e62d32; }
 
-        .highlight:hover {
-            text-shadow: 0 0 8px rgba(0,0,0,0.2);
+        /* Color classes for titles and highlights, pulled from the logo palette */
+        .color-green { color: #8dc63f; }
+        .color-cyan { color: #00a9ce; }
+        .color-yellow { color: #ffd500; }
+        .color-blue { color: #005baa; }
+        .color-red { color: #e62d32; }
+        .color-purple { color: #c40e84; }
+
+        /* Navigation arrow styling */
+        .nav-arrow {
+            position: fixed;
+            bottom: 2rem;
+            z-index: 20;
+            cursor: pointer;
+            background-color: rgba(255, 255, 255, 0.7);
+            border-radius: 50%;
+            padding: 1rem;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.4s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
+        .nav-arrow:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+        }
+        .nav-arrow.hidden {
+             opacity: 0;
+             pointer-events: none;
+        }
+        #prev-arrow { left: 2.5rem; }
+        #next-arrow { right: 2.5rem; }
     </style>
 </head>
 <body class="bg-gray-100 text-gray-800 overflow-hidden">
 
-    <!-- The animated background canvas --><canvas id="particle-canvas"></canvas>
+    <!-- The animated background canvas -->
+    <canvas id="particle-canvas"></canvas>
 
-    <!-- Main container for the quote, centered on the page --><div class="relative min-h-screen flex items-center justify-center p-6">
-        <div class="z-10 max-w-4xl text-center fade-in">
-            <!-- Main heading of the quote --><h1 class="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 text-gray-800">
-                We Use Technology to Learn and Create
-            </h1>
-            <!-- The rest of the quote --><p class="text-lg md:text-xl lg:text-2xl text-gray-600 leading-relaxed">
-                As curious learners, we use technology not just to consume information, but to actively 
-                <span class="highlight highlight-green">create</span>, 
-                <span class="highlight highlight-cyan">build</span>, and 
-                <span class="highlight highlight-yellow">demonstrate</span> 
-                our understanding. We use technology as a tool to support our learning, never as a substitute for our own essential 
-                <span class="highlight highlight-blue">critical thinking</span>.
-            </p>
+    <!-- Main container for the guidelines, centered on the page -->
+    <!-- FIX: Changed from flex to grid and place-items-center to ensure true centering -->
+    <main class="relative min-h-screen grid place-items-center p-6">
+        <!-- FIX: Added grid-area to make containers overlap perfectly for centering -->
+        <div id="content-container" class="z-10 max-w-4xl w-full text-center fade-container" style="grid-area: 1 / 1;">
+            <!-- Guideline Title will be injected here by JS -->
+            <h1 id="guideline-title" class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6"></h1>
+            <!-- Guideline Description will be injected here by JS -->
+            <p id="guideline-description" class="text-lg md:text-xl text-gray-600 leading-relaxed"></p>
+            <!-- Common Sense Media connection will be injected here by JS -->
+            <p id="guideline-connection" class="text-md text-gray-500 mt-8 italic"></p>
         </div>
-        <!-- "Learn More" link section --><div class="z-10 absolute bottom-8 fade-in">
-            <p class="text-md md:text-lg text-gray-500">
-                Learn More at <a href="http://bit.ly/ISPdcg" target="_blank" class="highlight highlight-red underline font-semibold">bit.ly/ISPdcg</a>
-            </p>
+
+        <!-- Container for the restart button -->
+        <!-- FIX: Added grid-area to make containers overlap perfectly for centering -->
+        <div id="restart-container" class="z-10 text-center fade-container content-hidden" style="grid-area: 1 / 1;">
+             <button id="restart-button" class="text-xl text-gray-700 hover:text-black font-semibold py-2 px-4 transition-colors">
+                (back to the beginning)
+            </button>
         </div>
+    </main>
+
+    <!-- Navigation Arrows -->
+    <div id="prev-arrow" class="nav-arrow">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+    </div>
+    <div id="next-arrow" class="nav-arrow">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
     </div>
 
     <script>
-        // JavaScript for the animated particle background
-        const canvas = document.getElementById('particle-canvas');
-        const ctx = canvas.getContext('2d');
+        document.addEventListener('DOMContentLoaded', () => {
 
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+            // --- DATA & CONFIGURATION ---
+            const guidelines = [
+                {
+                    title: "1. We Use Technology to Learn and Create",
+                    description: "As curious learners, we use technology not just to consume information, but to actively <span class='highlight color-green'>create</span>, <span class='highlight color-cyan'>build</span>, and <span class='highlight color-yellow'>demonstrate</span> our understanding. We use technology as a tool to support our learning, never as a substitute for our own essential <span class='highlight color-blue'>critical thinking</span>.",
+                    connection: ""
+                },
+                {
+                    title: "2. We Are Honest and Authentic Online",
+                    description: "A competent digital citizen represents themselves <span class='highlight color-cyan'>honestly</span> and submits their own <span class='highlight color-yellow'>original work</span>. We take pride in our own original work, give credit where it is due and use technology to <span class='highlight color-blue'>authentically</span> showcase our own learning. We engage <span class='highlight color-red'>respectfully</span> with all ideas and perspectives.",
+                    connection: "Common Sense Media Connection - Information and Media Literacy"
+                },
+                {
+                    title: "3. We Act with Integrity Everywhere",
+                    description: "We recognize that our digital and face-to-face lives are <span class='highlight color-yellow'>connected</span>. Our values don't change when we're behind a screen. We <span class='highlight color-blue'>speak up</span> when we see others being treated unkindly and we conduct ourselves online with the same <span class='highlight color-red'>compassion</span> and <span class='highlight color-purple'>integrity</span> we practice in our classrooms and hallways.",
+                    connection: "Common Sense Media Connection - Relationships and Communication"
+                },
+                {
+                    title: "4. We Protect Ourselves and Our Community",
+                    description: "We protect our community by keeping personal information <span class='highlight color-blue'>private</span> and being <span class='highlight color-red'>careful</span> and <span class='highlight color-purple'>aware</span> about what we share. We <span class='highlight color-green'>report</span> any online behavior that feels unsafe or unkind to a trusted adult.",
+                    connection: "Common Sense Media Connection - Cyberbullying and Online Harms"
+                },
+                {
+                    title: "5. We Are Responsible for Our Digital Footprint",
+                    description: "We understand our online actions are <span class='highlight color-red'>permanent</span>. We take <span class='highlight color-purple'>responsibility</span> for our posts and comments, knowing they form our digital footprint, and work to build a <span class='highlight color-green'>positive</span> online reputation for ourselves and our community.",
+                    connection: "Common Sense Media Connection - Digital Footprint and Online Identity"
+                },
+                {
+                    title: "6. We Find a Healthy Balance",
+                    description: "We seek a <span class='highlight color-purple'>healthy balance</span> between our online and offline lives. We use our screentime <span class='highlight color-green'>productively</span> and avoid unnecessary digital distraction. We use technology with <span class='highlight color-cyan'>purpose</span> for learning and connecting, but also know when it's time to <span class='highlight color-yellow'>unplug</span> and put away our screens for our health.",
+                    connection: "Common Sense Media Connection - Healthy Habits"
+                },
+                {
+                    title: "7. We Care For Our Shared Resources",
+                    description: "We are <span class='highlight color-green'>responsible</span> with our community’s technology. We <span class='highlight color-cyan'>care</span> for our devices, use our fair share of resources like bandwidth, and <span class='highlight color-yellow'>respect</span> the digital systems and security measures that keep our community safe and operational.",
+                    connection: "Common Sense Media Connection - Privacy and Safety"
+                }
+            ];
+            const titleColors = ['color-green', 'color-cyan', 'color-yellow', 'color-blue', 'color-red', 'color-purple', 'color-green'];
+            const animationProfiles = [
+                { particles: 15000, distance: 20000, speed: 0.2 }, { particles: 18000, distance: 25000, speed: 0.3 }, { particles: 12000, distance: 18000, speed: 0.2 }, { particles: 16000, distance: 22000, speed: 0.1 }, { particles: 14000, distance: 19000, speed: 0.4 }, { particles: 20000, distance: 28000, speed: 0.25 }, { particles: 13000, distance: 20000, speed: 0.3 }
+            ];
 
-        let particlesArray;
+            // --- DOM ELEMENTS & STATE ---
+            const titleEl = document.getElementById('guideline-title');
+            const descriptionEl = document.getElementById('guideline-description');
+            const connectionEl = document.getElementById('guideline-connection');
+            const contentContainer = document.getElementById('content-container');
+            const restartContainer = document.getElementById('restart-container');
+            const restartButton = document.getElementById('restart-button');
+            const prevArrow = document.getElementById('prev-arrow');
+            const nextArrow = document.getElementById('next-arrow');
+            
+            let currentGuidelineIndex = 0;
+            const totalGuidelines = guidelines.length;
 
-        // Colors sampled from the ISP logo star
-        const logoColors = ['#00a9ce', '#005baa', '#c40e84', '#e62d32', '#ffd500', '#8dc63f'];
+            // --- PARTICLE ANIMATION LOGIC (UNCHANGED) ---
+            const canvas = document.getElementById('particle-canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            let particlesArray;
 
-        class Particle {
-            constructor(x, y, directionX, directionY, size, color) {
-                this.x = x; this.y = y; this.directionX = directionX; this.directionY = directionY; this.size = size; this.color = color;
+            class Particle {
+                constructor(x, y, directionX, directionY, size, color) { this.x = x; this.y = y; this.directionX = directionX; this.directionY = directionY; this.size = size; this.color = color; }
+                draw() { ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false); ctx.fillStyle = this.color; ctx.fill(); }
+                update() {
+                    if (this.x > canvas.width || this.x < 0) { this.directionX = -this.directionX; }
+                    if (this.y > canvas.height || this.y < 0) { this.directionY = -this.directionY; }
+                    this.x += this.directionX; this.y += this.directionY; this.draw();
+                }
             }
 
-            draw() {
-                ctx.beginPath();
-                // Increased particle size
-                ctx.arc(this.x, this.y, this.size * 1.5, 0, Math.PI * 2, false); 
-                ctx.fillStyle = this.color;
-                ctx.fill();
+            function initAnimation(profile) {
+                particlesArray = [];
+                const logoColors = ['#00a9ce', '#005baa', '#c40e84', '#e62d32', '#ffd500', '#8dc63f'];
+                let numberOfParticles = (canvas.height * canvas.width) / profile.particles;
+                for (let i = 0; i < numberOfParticles; i++) {
+                    let size = (Math.random() * 2) + 1.5;
+                    let x = (Math.random() * ((innerWidth - size * 2) - (size * 2)) + size * 2);
+                    let y = (Math.random() * ((innerHeight - size * 2) - (size * 2)) + size * 2);
+                    let directionX = (Math.random() * profile.speed * 2) - profile.speed;
+                    let directionY = (Math.random() * profile.speed * 2) - profile.speed;
+                    let color = logoColors[Math.floor(Math.random() * logoColors.length)];
+                    particlesArray.push(new Particle(x, y, directionX, directionY, size, color));
+                }
             }
 
-            update() {
-                if (this.x > canvas.width || this.x < 0) { this.directionX = -this.directionX; }
-                if (this.y > canvas.height || this.y < 0) { this.directionY = -this.directionY; }
-                this.x += this.directionX; this.y += this.directionY;
-                this.draw();
-            }
-        }
-
-        function init() {
-            particlesArray = [];
-            // Reduced number of particles to spread them out more
-            let numberOfParticles = (canvas.height * canvas.width) / 15000; 
-            for (let i = 0; i < numberOfParticles; i++) {
-                let size = (Math.random() * 2) + 1;
-                let x = (Math.random() * ((innerWidth - size * 2) - (size * 2)) + size * 2);
-                let y = (Math.random() * ((innerHeight - size * 2) - (size * 2)) + size * 2);
-                let directionX = (Math.random() * .4) - .2;
-                let directionY = (Math.random() * .4) - .2;
-                // Assign a random color from the logo's color palette
-                let color = logoColors[Math.floor(Math.random() * logoColors.length)];
-                particlesArray.push(new Particle(x, y, directionX, directionY, size, color));
-            }
-        }
-
-        function connect() {
-            let opacityValue = 1;
-            for (let a = 0; a < particlesArray.length; a++) {
-                for (let b = a; b < particlesArray.length; b++) {
-                    let distance = ((particlesArray[a].x - particlesArray[b].x) * (particlesArray[a].x - particlesArray[b].x)) +
-                        ((particlesArray[a].y - particlesArray[b].y) * (particlesArray[a].y - particlesArray[b].y));
-                    
-                    // Increased connection distance for more spread out lines
-                    if (distance < (canvas.width / 5) * (canvas.height / 5)) { 
-                        opacityValue = 1 - (distance / 30000); // Adjusted for new distance
-                        // Use a neutral grey for connecting lines to work on the light background
-                        ctx.strokeStyle = `rgba(107, 114, 128, ${opacityValue * 0.5})`;
-                        ctx.lineWidth = 1;
-                        ctx.beginPath();
-                        ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
-                        ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
-                        ctx.stroke();
+            function connect() {
+                if (!particlesArray) return;
+                const profile = animationProfiles[currentGuidelineIndex % totalGuidelines];
+                let opacityValue = 1;
+                for (let a = 0; a < particlesArray.length; a++) {
+                    for (let b = a; b < particlesArray.length; b++) {
+                        let distance = ((particlesArray[a].x - particlesArray[b].x) ** 2) + ((particlesArray[a].y - particlesArray[b].y) ** 2);
+                        if (distance < (canvas.width / 7) * (canvas.height / 7)) {
+                            opacityValue = 1 - (distance / profile.distance);
+                            ctx.strokeStyle = `rgba(107, 114, 128, ${opacityValue * 0.5})`;
+                            ctx.lineWidth = 1;
+                            ctx.beginPath(); ctx.moveTo(particlesArray[a].x, particlesArray[a].y); ctx.lineTo(particlesArray[b].x, particlesArray[b].y); ctx.stroke();
+                        }
                     }
                 }
             }
-        }
 
-        function animate() {
-            requestAnimationFrame(animate);
-            ctx.clearRect(0, 0, innerWidth, innerHeight);
-            for (let i = 0; i < particlesArray.length; i++) {
-                particlesArray[i].update();
+            let animationFrameId;
+            function animate() {
+                animationFrameId = requestAnimationFrame(animate);
+                ctx.clearRect(0, 0, innerWidth, innerHeight);
+                if (!particlesArray) return;
+                for (let i = 0; i < particlesArray.length; i++) { particlesArray[i].update(); }
+                connect();
             }
-            connect();
-        }
 
-        window.addEventListener('resize', () => {
-            canvas.width = innerWidth;
-            canvas.height = innerHeight;
-            init();
+            window.addEventListener('resize', () => {
+                canvas.width = innerWidth;
+                canvas.height = innerHeight;
+                if(currentGuidelineIndex < totalGuidelines) {
+                    initAnimation(animationProfiles[currentGuidelineIndex]);
+                }
+            });
+
+            // --- APPLICATION LOGIC ---
+            function renderState() {
+                // Fade out everything first for a smoother transition
+                contentContainer.classList.add('content-hidden');
+                restartContainer.classList.add('content-hidden');
+
+                // Update arrow visibility
+                prevArrow.classList.toggle('hidden', currentGuidelineIndex <= 0);
+                nextArrow.classList.toggle('hidden', currentGuidelineIndex >= totalGuidelines);
+
+                setTimeout(() => {
+                    if (currentGuidelineIndex === totalGuidelines) {
+                        // Show the restart screen
+                        restartContainer.classList.remove('content-hidden');
+                    } else {
+                        // Show the guideline content
+                        const guideline = guidelines[currentGuidelineIndex];
+                        const colorClass = titleColors[currentGuidelineIndex % titleColors.length];
+                        
+                        titleEl.textContent = guideline.title;
+                        descriptionEl.innerHTML = guideline.description;
+                        connectionEl.textContent = guideline.connection;
+                        titleEl.className = 'text-4xl md:text-5xl lg:text-6xl font-bold mb-6';
+                        titleEl.classList.add(colorClass);
+                        
+                        initAnimation(animationProfiles[currentGuidelineIndex]);
+                        contentContainer.classList.remove('content-hidden');
+                    }
+                }, 500); // This delay matches the CSS transition duration
+            }
+
+            // --- EVENT LISTENERS ---
+            nextArrow.addEventListener('click', () => {
+                if (currentGuidelineIndex < totalGuidelines) {
+                    currentGuidelineIndex++;
+                    renderState();
+                }
+            });
+
+            prevArrow.addEventListener('click', () => {
+                if (currentGuidelineIndex > 0) {
+                    currentGuidelineIndex--;
+                    renderState();
+                }
+            });
+
+            restartButton.addEventListener('click', () => {
+                currentGuidelineIndex = 0;
+                renderState();
+            });
+
+            // --- INITIAL LOAD ---
+            renderState();
+            animate();
         });
-
-        init();
-        animate();
     </script>
 </body>
 </html>
